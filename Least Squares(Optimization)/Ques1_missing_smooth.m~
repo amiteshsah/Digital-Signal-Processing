@@ -1,0 +1,48 @@
+% Suppose the available data is noisy and that some samples are missing.
+% Formulate a suitable least squares optimization problem to simultaneously
+% smooth the data and recover the missing samples. Illustrate the
+% effectiveness by a numerical demonstration (e.g. using Matlab).
+clc;
+clear all;
+close all
+x=textread('ECG_noisy_incomplete.txt');
+plot(x)
+N=size(x,1);
+% Calculating matrix S
+miss=isnan(x);
+k=sum(miss(:)==0);
+s=zeros(k,N);
+j=1;
+for i=1:N
+    if miss(i)==0;
+        s(j,i)=1;
+        j=j+1;
+    end
+end
+x(isnan(x)) = 0 ;
+y=s*x;
+I=eye(N);
+% ?complement? of S
+sc=zeros(N-k,N);
+j=1;
+for i=1:N
+    if miss(i)==1;
+        sc(j,i)=1;
+        j=j+1;
+    end
+end
+% second order difference matrix
+D1=[1 -2 1];
+D=zeros(N,N);
+for i=1:N-2
+    D(i,i:i+2)=D1(1,:);
+end
+
+lambda1=0.1;
+lambda2=0.1;
+
+C=(sc*sc'+lambda2.*sc*D'*D*sc'*y);
+A=(lambda1*D'*D+I)
+B==sc';
+E=(y'*
+figure,plot(x);

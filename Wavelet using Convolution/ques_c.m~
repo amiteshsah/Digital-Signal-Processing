@@ -1,0 +1,168 @@
+% C) Construct Daubechies filters of lengths 4, 6, and 8.
+% To obtain the low-pass filter, start with the symmetric half-band filters of the form Q(z) (z+1)^K
+% from HW 03, then perform spectral factorization. Use K = 4, 6, and 8. To obtain the high-pass
+% filter, use the relation in the notes (time-reverse and modulate). Verify that your length-4 filter is
+% the same as the length-4 filter in the lecture notes from week 1.
+%  For each filter, show the impulse response, frequency response, and zero diagram.
+% Numerically verify that your filters have the perfect reconstruction property when used in a filter
+% bank or wavelet transform.
+
+clc;clear all;close all
+
+% Daubechies filters of lengths 4
+k=2;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1)
+end
+q=[-1/16 1/4 -1/16];
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+% Verification of length 4 filter
+h0=(1+sqrt(3))/(4*sqrt(2));
+h1=(3+sqrt(3))/(4*sqrt(2));
+h2=(3-sqrt(3))/(4*sqrt(2));
+h3=(1-sqrt(3))/(4*sqrt(2));
+
+hv=[h0 h1 h2 h3];
+T = table(['ho';'h1';'h2';'h3'],[h0;h1;h2;h3],h',...
+    'VariableNames',{'Filter_coefficient' 'from_week_1' 'Obtained'})
+
+% Plotting impulse response, frequency response and pole zero diagram
+% Impulse Response
+a=1;
+b=h;
+imp=[1 zeros(1,10)];
+h=filter(b,a,imp);
+figure,stem(h)
+xlabel('samples n');
+ylabel('Amplitude');
+title('Impulse Response of length 4 Daubechies filter');
+saveas(gcf,'Imp4.jpg')
+
+% Frequency Response
+j=sqrt(-1);
+om=linspace(-pi,pi,200);
+Hf=polyval(b,exp(j*om))./polyval(a,exp(j*om));
+figure,plot(om/(2*pi),abs(Hf))
+title('Frequency Response |H^f(\omega)| of length 4 Daubechies filter');
+xlabel('\omega/2\pi');
+saveas(gcf,'Fre4.jpg')
+
+figure,
+% Pole zero diagram
+zplane(b,a)
+title('Pole zero diagram of length 4 Daubechies filter');
+saveas(gcf,'PZ4.jpg')
+
+
+%%
+% Daubechies filters of lengths 6
+k=3;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1)
+end
+q=[0.0117 -0.0703 0.1484 -0.0703 0.0117]; 
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+% Plotting impulse response, frequency response and pole zero diagram
+% Impulse Response
+a=1;
+b=h;
+imp=[1 zeros(1,10)];
+h=filter(b,a,imp);
+figure,stem(h)
+xlabel('samples n');
+ylabel('Amplitude');
+title('Impulse Response of length 6 Daubechies filter');
+saveas(gcf,'Imp6.jpg')
+
+% Frequency Response
+j=sqrt(-1);
+om=linspace(-pi,pi,200);
+Hf=polyval(b,exp(j*om))./polyval(a,exp(j*om));
+figure,plot(om/(2*pi),abs(Hf))
+title('Frequency Response |H^f(\omega)| of length 6 Daubechies filter');
+xlabel('\omega/2\pi');
+saveas(gcf,'Fre6.jpg')
+
+figure,
+% Pole zero diagram
+zplane(b,a)
+title('Pole zero diagram of length 6 Daubechies filter')
+saveas(gcf,'PZ6.jpg')
+
+%%
+% Daubechies filters of lengths 8
+k=4;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1)
+end
+q=[0.0002 -0.0015 -0.0175 0.0435 -0.0175 -0.0015 0.0002]; 
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+% Plotting impulse response, frequency response and pole zero diagram
+% Impulse Response
+a=1;
+b=h;
+imp=[1 zeros(1,10)];
+h=filter(b,a,imp);
+figure,stem(h)
+xlabel('samples n');
+ylabel('Amplitude');
+title('Impulse Response of length 8 Daubechies filter');
+saveas(gcf,'Imp8.jpg')
+
+% Frequency Response
+j=sqrt(-1);
+om=linspace(-pi,pi,200);
+Hf=polyval(b,exp(j*om))./polyval(a,exp(j*om));
+figure,plot(om/(2*pi),abs(Hf))
+title('Frequency Response |H^f(\omega)| of length 8 Daubechies filter');
+xlabel('\omega/2\pi');
+saveas(gcf,'Fre8.jpg')
+
+figure,
+% Pole zero diagram
+zplane(b,a)
+title('Pole zero diagram of length 8 Daubechies filter');
+saveas(gcf,'PZ8.jpg')
+

@@ -1,0 +1,302 @@
+% D) Using each of the Daubechies filters from (C), plot the wavelet representation of the signals
+% bumps and pwsmooth. Use 5 levels of the wavelet transform.
+
+ % Length 4 Daubechies filter level 5 , Pwsmooth input file 
+clc;clear all;close all 
+x = dlmread('pwsmooth.txt');
+level=5;
+
+% padding of zero if the signal is odd length 
+if mod(length(x),2)~=0
+    x(1,end+1)=0;
+end
+
+% Daubechies filters of lengths 4
+k=2;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[-1/16 1/4 -1/16];
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+xin=x;
+for i =1:level   
+c{1,i}=downsample(conv(xin,h,'valid'),2);
+d{1,i}=downsample(conv(xin,h1,'valid'),2);
+xin=c{1,i};
+end
+
+m=level;
+ figure, 
+for j=1:level
+    x_axis=1:1:length(d{1,m});
+    subplot(level+1,1,j+1),plot(x_axis,d{1,m}),ylabel(['d',num2str(m)]);
+    m=m-1;
+end
+    x_axis=1:1:length(c{1,level});
+     subplot(level+1,1,1),plot(x_axis,c{1,level}),ylabel(['c',num2str(level)]);
+     title('Daubechies length 4 wavelet representation for pwsmooth');
+     saveas(gcf,'pwsmooth4.jpg')
+     
+%%
+ % Length 4 Daubechies filter level 5 , bumps input file 
+clear all
+x = dlmread('bumps.txt');
+level=5;
+% padding of zero if the signal is odd length 
+if mod(length(x),2)~=0
+    x(1,end+1)=0;
+end
+
+% Daubechies filters of lengths 4
+k=2;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[-1/16 1/4 -1/16];
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+xin=x;
+for i =1:level   
+c{1,i}=downsample(conv(xin,h,'valid'),2);
+d{1,i}=downsample(conv(xin,h1,'valid'),2);
+xin=c{1,i};
+end
+
+m=level;
+ figure, 
+for j=1:level
+    x_axis=1:1:length(d{1,m});
+    subplot(level+1,1,j+1),plot(x_axis,d{1,m}),ylabel(['d',num2str(m)]);
+    m=m-1;
+end
+    x_axis=1:1:length(c{1,level});
+     subplot(level+1,1,1),plot(x_axis,c{1,level}),ylabel(['c',num2str(level)]);
+     title('Daubechies length 4 wavelet representation for bumps');
+     saveas(gcf,'bumps4.jpg')
+ %%
+ % Length 6 Daubechies filter level 5 , Pwsmooth input file 
+ clear all;
+ clear all
+x = dlmread('pwsmooth.txt');
+level=5;
+% padding of zero if the signal is odd length 
+if mod(length(x),2)~=0
+    x(1,end+1)=0;
+end
+
+% Daubechies filters of lengths 6
+k=3;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[0.0117 -0.0703 0.1484 -0.0703 0.0117]; 
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+xin=x;
+for i =1:level   
+c{1,i}=downsample(conv(xin,h,'valid'),2);
+d{1,i}=downsample(conv(xin,h1,'valid'),2);
+xin=c{1,i};
+end
+
+m=level;
+ figure, 
+for j=1:level
+    x_axis=1:1:length(d{1,m});
+    subplot(level+1,1,j+1),plot(x_axis,d{1,m}),ylabel(['d',num2str(m)]);
+    m=m-1;
+end
+    x_axis=1:1:length(c{1,level});
+     subplot(level+1,1,1),plot(x_axis,c{1,level}),ylabel(['c',num2str(level)]);
+     title('Daubechies length 6 wavelet representation for pwsmooth');
+     saveas(gcf,'pwsmooth4.jpg')
+    %%
+ % Length 6 Daubechies filter level 5 , Bumps input file 
+ clear all;
+ clear all
+x = dlmread('bumps.txt');
+level=5;
+% padding of zero if the signal is odd length 
+if mod(length(x),2)~=0
+    x(1,end+1)=0;
+end
+
+% Daubechies filters of lengths 6
+k=3;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[0.0117 -0.0703 0.1484 -0.0703 0.0117]; 
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+xin=x;
+for i =1:level   
+c{1,i}=downsample(conv(xin,h,'valid'),2);
+d{1,i}=downsample(conv(xin,h1,'valid'),2);
+xin=c{1,i};
+end
+
+m=level;
+ figure, 
+for j=1:level
+    x_axis=1:1:length(d{1,m});
+    subplot(level+1,1,j+1),plot(x_axis,d{1,m}),ylabel(['d',num2str(m)]);
+    m=m-1;
+end
+    x_axis=1:1:length(c{1,level});
+     subplot(level+1,1,1),plot(x_axis,c{1,level}),ylabel(['c',num2str(level)]);
+     title('Daubechies length 6 wavelet representation for bumps');
+     
+     %%
+     
+ % Length 8 Daubechies filter level 5 , Pwsmooth input file 
+ clear all;
+ clear all
+x = dlmread('pwsmooth.txt');
+level=5;
+% padding of zero if the signal is odd length 
+if mod(length(x),2)~=0
+    x(1,end+1)=0;
+end
+
+% Daubechies filters of lengths 8
+k=4;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[0.0002 -0.0015 -0.0175 0.0435 -0.0175 -0.0015 0.0002];
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+xin=x;
+for i =1:level   
+c{1,i}=downsample(conv(xin,h,'valid'),2);
+d{1,i}=downsample(conv(xin,h1,'valid'),2);
+xin=c{1,i};
+end
+
+m=level;
+ figure, 
+for j=1:level
+    x_axis=1:1:length(d{1,m});
+    subplot(level+1,1,j+1),plot(x_axis,d{1,m}),ylabel(['d',num2str(m)]);
+    m=m-1;
+end
+    x_axis=1:1:length(c{1,level});
+     subplot(level+1,1,1),plot(x_axis,c{1,level}),ylabel(['c',num2str(level)]);
+     title('Daubechies length 8 wavelet representation for pwsmooth');
+     
+    %%
+ % Length 8 Daubechies filter level 5 , Bumps input file 
+ clear all;
+ clear all
+x = dlmread('bumps.txt');
+level=5;
+% padding of zero if the signal is odd length 
+if mod(length(x),2)~=0
+    x(1,end+1)=0;
+end
+
+% Daubechies filters of lengths 8
+k=4;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[0.0002 -0.0015 -0.0175 0.0435 -0.0175 -0.0015 0.0002];  
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)) % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1)*h(n);     %h1 is a highpass filter
+end
+
+xin=x;
+for i =1:level   
+c{1,i}=downsample(conv(xin,h,'valid'),2);
+d{1,i}=downsample(conv(xin,h1,'valid'),2);
+xin=c{1,i};
+end
+
+m=level;
+ figure, 
+for j=1:level
+    x_axis=1:1:length(d{1,m});
+    subplot(level+1,1,j+1),plot(x_axis,d{1,m}),ylabel(['d',num2str(m)]);
+    m=m-1;
+end
+    x_axis=1:1:length(c{1,level});
+     subplot(level+1,1,1),plot(x_axis,c{1,level}),ylabel(['c',num2str(level)]);
+     title('Daubechies length 8 wavelet representation for bumps');

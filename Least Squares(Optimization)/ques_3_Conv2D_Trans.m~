@@ -1,0 +1,19 @@
+clc;clear all;close all
+x=imread('Lenna.png');
+x=rgb2gray(x);
+figure,imshow(x)
+h = [1 1 1;1 -4 1;1 1 1]/4;
+y = conv2(h,x);
+y1= conv2(h',x);
+% H = @(x) conv2(h,x);
+Ht = @(y) convt2(h,x);
+% Y=H(x);
+Yt=Ht(x);
+Ydiff=abs(y1-Yt);
+figure,
+subplot(2,2,1),imshow(x);title('Input image');
+subplot(2,2,2),imshow(y,[]);title('Output conv2(h,x) without function handle');
+subplot(2,2,3),imshow(y1,[]);title('Output conv2(h^t,x) without function handle');
+subplot(2,2,4),imshow(Yt,[]);title('Output Ht(x) @convt2(h,x)');
+
+figure,imshow(Ydiff,[]).title('Difference between 

@@ -1,0 +1,215 @@
+% E) Wavelet functions. Using Noble Identities, the path from the input to the high-pass output at
+% each level of a wavelet transform is equivalent to --> F(z) --> down(M) -->. See Exercise 11.28
+% in the DSP Exercise packet assigned in HW 4 for the case of a 3-level transform.
+%  1.) Identify F(z) and M (general formulas for any level).
+%  2.) For a length-4 Daubechies filter, plot the impulse response f(n) for each level up to level 10.
+% I suggest to use subplot(5, 2, n) and 'orient tall' in Matlab to place the plots on a single page.
+%  3.) Repeat 2.) for length-6 Daubechies filter.
+%  4.) Repeat 2.) for length-8 Daubechies filter.
+
+%% 1.) Identify F(z) and M (general formulas for any level).
+% Haar filter 
+clc;clear all;close all
+x=1:1:20;
+% x = dlmread('pwsmooth.txt');
+level=input('Enter the level of haar transform coeff: ');
+
+% padding of zero if the signal is odd length 
+if mod(length(x),2)~=0
+    x(1,end+1)=0;
+end
+
+h=[0.5 0.5];
+l=length(h);
+l1=3;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1+1)*h1(n);     %h1 is a highpass filter
+end
+
+% determining number of low pass and high pass filter used
+nl=level-1;
+nh=1;
+nd=power(2,level);
+
+% Equivalent filter F(z)
+u=2;
+if level==1
+    f=h1
+else
+   for i=2:nl
+       hi=upsample(h,u);
+       h=conv(h,hi);
+       u=power(u,2);
+   end
+   f=conv(h,upsample(h1,power(2,nl)))
+end
+figure, stem(f);
+disp(['down(M) = ',num2str(nd)]);
+
+%% 2.) For a length-4 Daubechies filter, plot the impulse response f(n) for each level up to level 10.
+
+% length-4 Daubechies filter
+clc;clear all;close all
+k=2;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[-1/16 1/4 -1/16];
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)); % h is a low pass filter
+
+l=length(h);
+l1=3;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1+1)*h1(n);     %h1 is a highpass filter
+end
+
+% Equivalent filter F(z)
+for j=1:6
+    level=j;
+u=2;
+h2=h;
+if level==1
+    f=h1;
+else
+   for i=2:level-1
+       hi=upsample(h,u);
+       h=conv(h,hi);
+       u=power(u,2);
+   end
+   f=conv(h,upsample(h1,power(2,level-1)));
+end
+
+a=1;
+b=f;
+imp=[1 zeros(1,100)];
+f1=filter(b,a,imp);
+subplot(3,2,j),plot(f1);
+xlabel('samples n');
+ylabel('Amplitude');
+title(['Level:',num2str(level)]);
+clearvars h;
+clearvars f
+clearvars hi
+clearvars b
+h=h2;
+end
+
+%%
+%% 3.) For a length-6 Daubechies filter, plot the impulse response f(n) for each level up to level 6.
+
+% length-6 Daubechies filter
+clc;clear all;close all
+k=3;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[0.0117 -0.0703 0.1484 -0.0703 0.0117]; 
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)); % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1+1)*h1(n);     %h1 is a highpass filter
+end
+
+% Equivalent filter F(z)
+for j=1:6
+    level=j;
+u=2;
+h2=h;
+if level==1
+    f=h1;
+else
+   for i=2:level-1
+       hi=upsample(h,u);
+       h=conv(h,hi);
+       u=power(u,2);
+   end
+   f=conv(h,upsample(h1,power(2,level-1)));
+end
+
+a=1;
+b=f;
+imp=[1 zeros(1,100)];
+f1=filter(b,a,imp);
+subplot(3,2,j),plot(f1);
+xlabel('samples n');
+ylabel('Amplitude');
+title(['Level:',num2str(level)]);
+clearvars h;
+clearvars f
+clearvars hi
+clearvars b
+h=h2;
+end
+%%
+%% 3.) For a length-8 Daubechies filter, plot the impulse response f(n) for each level up to level 6.
+
+% length-8 Daubechies filter
+clc;clear all;close all
+k=4;
+p1=[1 1];
+p2=p1;
+for i=1:2*k-1
+    p2=conv(p2,p1);
+end
+q=[-0.0024 0.0195 -0.0640 0.1016 -0.0640 0.0195 -0.0024]; 
+p=conv(p2,q)
+r=seprts(p);
+h=poly(r);
+h=real(h); % (discard zero imag part)
+h=h*sqrt(max(p)/sum(abs(h).^2)); % h is a low pass filter
+
+l=length(h);
+l1=1;
+h1=h(end:-1:1);
+for n=1:l
+h1(n)=power(-1,n-l1+1)*h1(n);     %h1 is a highpass filter
+end
+
+% Equivalent filter F(z)
+for j=1:6
+    level=j;
+u=2;
+h2=h;
+if level==1
+    f=h1;
+else
+   for i=2:level-1
+       hi=upsample(h,u);
+       h=conv(h,hi);
+       u=power(u,2);
+   end
+   f=conv(h,upsample(h1,power(2,level-1)));
+end
+
+a=1;
+b=f;
+imp=[1 zeros(1,100)];
+f1=filter(b,a,imp);
+subplot(3,2,j),plot(f1);
+xlabel('samples n');
+ylabel('Amplitude');
+title(['Level:',num2str(level)]);
+clearvars h;
+clearvars f
+clearvars hi
+clearvars b
+h=h2;
+end
+
